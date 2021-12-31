@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "168710863268",
+    "project_id": "caveman-poet",
+    "storage_bucket": "caveman-poet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168710863268:android:6106a731e8c376371b2931",
+        "android_client_info": {
+          "package_name": "dev.fezzle.cavepoet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168710863268-588u6rc9jna5etohkll8q3pgau8c0vha.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy7zQRRneToX1F8mB-jBITgR3vrWR8Q-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168710863268-588u6rc9jna5etohkll8q3pgau8c0vha.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
