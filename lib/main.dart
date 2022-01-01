@@ -106,6 +106,145 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Timer? _timer;
+
+  final ButtonStyle teamPlayingButtonStyle = ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Colors.green.shade300));
+
+  final ButtonStyle teamWatchingButtonStyle = ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300));
+
+  startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsRemaining == 0) {
+        setState(() {
+          timer.cancel();
+          secondsRemaining = maxSeconds;
+          audioplayer.play("buzzer.mp3");
+          if (currentTeam == 0) {
+            currentTeam = 1;
+          } else {
+            currentTeam = 0;
+          }
+          chooseNewCard();
+          // debugPrint("timer done");
+        });
+      } else {
+        setState(() {
+          secondsRemaining--;
+          // debugPrint("timer $secondsRemaining");
+        });
+      }
+    });
+  }
+
+  chooseNewCard() {
+    // check if all cards are used.  If so, reset all cards to unused
+    currentCard++;
+    if (currentCard >= cards.length) {
+      cards.shuffle();
+      currentCard = 0;
+    }
+  }
+
+  onPressedWrong() {
+    setState(() {
+      teamScores[currentTeam] = teamScores[currentTeam] - 1;
+      if (teamScores[currentTeam] < 0) teamScores[currentTeam] = 0;
+
+      teamStrings[currentTeam] =
+          teamNames[currentTeam] + teamScores[currentTeam].toString();
+
+      chooseNewCard();
+    });
+  }
+
+  onPressedEasy() {
+    setState(() {
+      teamScores[currentTeam] = teamScores[currentTeam] + 1;
+      teamStrings[currentTeam] =
+          teamNames[currentTeam] + teamScores[currentTeam].toString();
+      chooseNewCard();
+    });
+  }
+
+  onPressedHard() {
+    setState(() {
+      teamScores[currentTeam] += 3;
+      teamStrings[currentTeam] =
+          teamNames[currentTeam] + teamScores[currentTeam].toString();
+      chooseNewCard();
+    });
+  }
+
+  onPressedTeam1() {
+    setState(() {
+      currentTeam = 0;
+    });
+  }
+
+  onPressedTeam2() {
+    setState(() {
+      currentTeam = 1;
+    });
+  }
+
+  handleMenuClick(String value) {
+    switch (value) {
+      case 'Reset Game':
+        setState(() {
+          teamScores.fillRange(0, teamScores.length, 0);
+          updateTeamStrings();
+          currentTeam = 0;
+          secondsRemaining = maxSeconds;
+          _timer?.cancel();
+        });
+
+        break;
+      case 'How to Play':
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Text("How to Play"),
+                  content: const Text(
+                      "Play in 2 teams.  You can get your teammates to guess either the one point or 3 point word."),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("OK")),
+                  ],
+                ));
+        break;
+      case 'About':
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Text("About"),
+                  content: const Text(
+                    "Written by Chester Liu\n\n\u00a9 2021",
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("OK")),
+                  ],
+                ));
+        break;
+    }
+  }
+
+//  If we dispose the widget, need to stop the timer
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -114,142 +253,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    final ButtonStyle teamPlayingButtonStyle = ButtonStyle(
-        backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.green.shade300));
-
-    final ButtonStyle teamWatchingButtonStyle = ButtonStyle(
-        backgroundColor:
-            MaterialStateProperty.all<Color>(Colors.grey.shade300));
-
-    Timer _timer;
-
-    startTimer() {
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (secondsRemaining == 0) {
-          setState(() {
-            timer.cancel();
-            secondsRemaining = maxSeconds;
-            audioplayer.play("buzzer.mp3");
-            if (currentTeam == 0) {
-              currentTeam = 1;
-            } else {
-              currentTeam = 0;
-            }
-            // debugPrint("timer done");
-          });
-        } else {
-          setState(() {
-            secondsRemaining--;
-            // debugPrint("timer $secondsRemaining");
-          });
-        }
-      });
-    }
-
-    chooseNewCard() {
-      // check if all cards are used.  If so, reset all cards to unused
-      currentCard++;
-      if (currentCard >= cards.length) {
-        cards.shuffle();
-        currentCard = 0;
-      }
-    }
-
-    onPressedWrong() {
-      setState(() {
-        teamScores[currentTeam] = teamScores[currentTeam] - 1;
-        if (teamScores[currentTeam] < 0) teamScores[currentTeam] = 0;
-
-        teamStrings[currentTeam] =
-            teamNames[currentTeam] + teamScores[currentTeam].toString();
-
-        chooseNewCard();
-      });
-    }
-
-    onPressedEasy() {
-      setState(() {
-        teamScores[currentTeam] = teamScores[currentTeam] + 1;
-        teamStrings[currentTeam] =
-            teamNames[currentTeam] + teamScores[currentTeam].toString();
-        chooseNewCard();
-      });
-    }
-
-    onPressedHard() {
-      setState(() {
-        teamScores[currentTeam] += 3;
-        teamStrings[currentTeam] =
-            teamNames[currentTeam] + teamScores[currentTeam].toString();
-        chooseNewCard();
-      });
-    }
-
-    onPressedTeam1() {
-      setState(() {
-        currentTeam = 0;
-      });
-    }
-
-    onPressedTeam2() {
-      setState(() {
-        currentTeam = 1;
-      });
-    }
-
-    onPressedTeam3() {
-      setState(() {
-        currentTeam = 2;
-      });
-    }
-
-    handleMenuClick(String value) {
-      switch (value) {
-        case 'Reset Scores':
-          setState(() {
-            teamScores.fillRange(0, teamScores.length, 0);
-            updateTeamStrings();
-          });
-
-          break;
-        case 'How to Play':
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: const Text("How to Play"),
-                    content: const Text(
-                        "Play in 2 teams.  You can get your teammates to guess either the one point or 3 point word."),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("OK")),
-                    ],
-                  ));
-          break;
-        case 'About':
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: const Text("About"),
-                    content: const Text(
-                      "Written by Chester Liu\n\n\u00a9 2021",
-                      textAlign: TextAlign.center,
-                    ),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("OK")),
-                    ],
-                  ));
-          break;
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -270,7 +273,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: PopupMenuButton<String>(
               onSelected: handleMenuClick,
               itemBuilder: (BuildContext context) {
-                return {'Reset Scores', 'How to Play', 'About'}.map((choice) {
+                return {'Reset Game', 'How to Play', 'About'}.map((choice) {
                   return PopupMenuItem<String>(
                       value: choice, child: Text(choice));
                 }).toList();
@@ -348,8 +351,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       (secondsRemaining == maxSeconds) ? startTimer : null,
                   child: const Text("Start"),
                 ),
-                Text("   Seconds Remaining = $secondsRemaining"),
+                Text(
+                  "   Seconds Remaining = $secondsRemaining",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
+            ),
+          ),
+          // Progress bar row //////////////////////////////////////
+          SizedBox(
+            height: 10,
+            child: LinearProgressIndicator(
+              minHeight: 10,
+              value: (1 - secondsRemaining / maxSeconds),
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.red),
             ),
           ),
           // Card row //////////////////////////////////////////////
@@ -444,20 +459,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed:
                       (secondsRemaining != maxSeconds) ? onPressedWrong : null,
-                  child: const Text("No! / Skip"),
+                  child: const Text("No! / Skip (-1)"),
                   style: ElevatedButton.styleFrom(primary: Colors.red),
                 ),
                 ElevatedButton(
                   onPressed:
                       (secondsRemaining != maxSeconds) ? onPressedEasy : null,
-                  child: const Text("Got Easy"),
-                  style: ElevatedButton.styleFrom(primary: Colors.green),
+                  child: const Text("Got Easy (+1)"),
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
                 ),
                 ElevatedButton(
                   onPressed:
                       (secondsRemaining != maxSeconds) ? onPressedHard : null,
-                  child: const Text("Got Hard"),
-                  style: ElevatedButton.styleFrom(primary: Colors.blue),
+                  child: const Text("Got Hard (+3)"),
+                  style: ElevatedButton.styleFrom(primary: Colors.blueGrey),
                 )
               ],
             ),
