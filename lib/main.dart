@@ -207,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context) => AlertDialog(
                   title: const Text("How to Play"),
                   content: const Text(
-                      "Play in 2 teams.  You can get your teammates to guess either the one point or 3 point word."),
+                      "Divide into 2 teams (GRUNTs and UGHs).\n\nOne player is selected to give clues to either the 1-point word or the 3-point word.  Your clues can only consist of one-syllable words and sentences.\n\nIf the clue-giver accidentally says a multi-syllable word, that point is lost and the player must tap the 'No/Skip' button.\n\nIf the team guesses the word, the clue-giver can tap the 'Got Easy' button or the 'Got Hard' button.\n\nContinue until the time runs out.  Pass the device to a member of the opposing team."),
                   actions: [
                     TextButton(
                         onPressed: () {
