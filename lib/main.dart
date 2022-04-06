@@ -223,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context) => AlertDialog(
                   title: const Text("About"),
                   content: const Text(
-                    "Written by Chester Liu\n\n\u00a9 2021",
+                    "Written by Chester Liu\n\n\u00a9 2021\n\nVersion 1.0.1",
                     textAlign: TextAlign.center,
                   ),
                   actions: [
