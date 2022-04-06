@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           timer.cancel();
           secondsRemaining = maxSeconds;
-          audioplayer.play("buzzer.mp3");
+          audioplayer.play("game-over.mp3");
           if (currentTeam == 0) {
             currentTeam = 1;
           } else {
@@ -148,6 +148,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   onPressedWrong() {
+
+    audioplayer.play("grunt.mp3");  
+
     setState(() {
       teamScores[currentTeam] = teamScores[currentTeam] - 1;
       if (teamScores[currentTeam] < 0) teamScores[currentTeam] = 0;
@@ -160,6 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   onPressedEasy() {
+    audioplayer.play("ding.mp3");
+
     setState(() {
       teamScores[currentTeam] = teamScores[currentTeam] + 1;
       teamStrings[currentTeam] =
@@ -169,6 +174,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   onPressedHard() {
+    audioplayer.play("yeah.mp3");
+
     setState(() {
       teamScores[currentTeam] += 3;
       teamStrings[currentTeam] =
@@ -238,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-//  If we dispose the widget, need to stop the timer
+  //  If we dispose the widget, need to stop the timer
   @override
   void dispose() {
     _timer?.cancel();
