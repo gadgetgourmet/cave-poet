@@ -40,7 +40,7 @@ updateTeamStrings() {
 const int maxSeconds = 60;
 int secondsRemaining = maxSeconds;
 
-AudioCache audioplayer = AudioCache();
+final audioplayer = AudioPlayer();
 
 void main() {
   runApp(const MyApp());
@@ -51,9 +51,9 @@ loadCards() async {
   final rawCardData = await rootBundle.loadString('assets/wordlist.csv');
   // debugPrint(rawCardData);
   List<List<dynamic>> csvData = const CsvToListConverter().convert(rawCardData);
-  csvData.forEach((element) {
+  for (var element in csvData) {
     cards.add(Card(element[0], element[1]));
-  });
+  }
   cards.shuffle();
 }
 
@@ -109,10 +109,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer? _timer;
 
   final ButtonStyle teamPlayingButtonStyle = ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(Colors.green.shade300));
+      backgroundColor: WidgetStateProperty.all<Color>(Colors.green.shade300));
 
   final ButtonStyle teamWatchingButtonStyle = ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade300));
+      backgroundColor: WidgetStateProperty.all<Color>(Colors.grey.shade300));
 
   startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           timer.cancel();
           secondsRemaining = maxSeconds;
-          audioplayer.play("game-over.mp3");
+          audioplayer.play(AssetSource("game-over.mp3"));
           if (currentTeam == 0) {
             currentTeam = 1;
           } else {
@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   onPressedWrong() {
 
-    audioplayer.play("grunt.mp3");  
+    audioplayer.play(AssetSource("grunt.mp3"));  
 
     setState(() {
       teamScores[currentTeam] = teamScores[currentTeam] - 1;
@@ -163,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   onPressedEasy() {
-    audioplayer.play("ding.mp3");
+    audioplayer.play(AssetSource("ding.mp3"));
 
     setState(() {
       teamScores[currentTeam] = teamScores[currentTeam] + 1;
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   onPressedHard() {
-    audioplayer.play("yeah.mp3");
+    audioplayer.play(AssetSource("yeah.mp3"));
 
     setState(() {
       teamScores[currentTeam] += 3;
@@ -386,7 +386,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     margin: const EdgeInsets.only(top: 20, bottom: 20),
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            primary: Colors.grey.shade300,
+                            backgroundColor: Colors.grey.shade300,
                             side:
                                 const BorderSide(color: Colors.brown, width: 5),
                             elevation: 15,
@@ -466,20 +466,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed:
                       (secondsRemaining != maxSeconds) ? onPressedWrong : null,
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   child: const Text("No! / Skip (-1)"),
-                  style: ElevatedButton.styleFrom(primary: Colors.red),
                 ),
                 ElevatedButton(
                   onPressed:
                       (secondsRemaining != maxSeconds) ? onPressedEasy : null,
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   child: const Text("Got Easy (+1)"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
                 ),
                 ElevatedButton(
                   onPressed:
                       (secondsRemaining != maxSeconds) ? onPressedHard : null,
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
                   child: const Text("Got Hard (+3)"),
-                  style: ElevatedButton.styleFrom(primary: Colors.blueGrey),
                 )
               ],
             ),
